@@ -1,0 +1,26 @@
+2024-10-31 11:47:04,279 - root - INFO - Namespace(data='mooc', bs=200, n_degree=10, n_head=2, n_epoch=50, n_layer=2, lr=0.0001, patience=20, n_runs=1, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.95, 0.05], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-10-31 11:47:45,421 - root - INFO - epoch: 1, tppr: 9.063229322433472, train: 24.543699979782104, val: 5.992611885070801
+2024-10-31 11:47:45,422 - root - INFO - train auc: 0.8882817955604138, train ap: 0.8449900647107815, train acc: 0.888911919776698, train loss: 0.7596117967251944
+2024-10-31 11:47:45,422 - root - INFO - val auc: 0.8687231666328789, new node val auc: 0.8073952629937067
+2024-10-31 11:47:45,423 - root - INFO - val ap: 0.8314363182978889, new node val ap: 0.7756202355734949
+2024-10-31 11:47:45,423 - root - INFO - val acc: 0.876649686363818, new node val acc: 0.832578125
+2024-10-31 11:48:08,123 - root - INFO - epoch: 2, tppr: 5.463543891906738, train: 18.124245643615723, val: 4.375831127166748
+2024-10-31 11:48:08,124 - root - INFO - train auc: 0.8951880222237765, train ap: 0.8568952663877626, train acc: 0.894543057996485, train loss: 0.7288438516729536
+2024-10-31 11:48:08,124 - root - INFO - val auc: 0.8189882588173029, new node val auc: 0.7805708472357855
+2024-10-31 11:48:08,125 - root - INFO - val ap: 0.780948832748166, new node val ap: 0.7542621006572785
+2024-10-31 11:48:08,125 - root - INFO - val acc: 0.8343008110591713, new node val acc: 0.8103304036458333
+2024-10-31 11:48:31,038 - root - INFO - epoch: 3, tppr: 5.454626083374023, train: 18.58921980857849, val: 4.3122828006744385
+2024-10-31 11:48:31,038 - root - INFO - train auc: 0.9042580299697157, train ap: 0.8690127589515383, train acc: 0.9018326785898895, train loss: 0.6976423089135511
+2024-10-31 11:48:31,039 - root - INFO - val auc: 0.8615027450009841, new node val auc: 0.8500085818820529
+2024-10-31 11:48:31,039 - root - INFO - val ap: 0.8189426166241199, new node val ap: 0.8159204221618294
+2024-10-31 11:48:31,040 - root - INFO - val acc: 0.8696032602181469, new node val acc: 0.8573372395833334
+2024-10-31 11:48:55,237 - root - INFO - epoch: 4, tppr: 5.430589437484741, train: 19.698956966400146, val: 4.487805128097534
+2024-10-31 11:48:55,238 - root - INFO - train auc: 0.9064099481729008, train ap: 0.8726669942715614, train acc: 0.9050124056652539, train loss: 0.688360986448759
+2024-10-31 11:48:55,238 - root - INFO - val auc: 0.8525536961507367, new node val auc: 0.8582125223795574
+2024-10-31 11:48:55,238 - root - INFO - val ap: 0.8081255237618213, new node val ap: 0.8227002513181786
+2024-10-31 11:48:55,239 - root - INFO - val acc: 0.8607958767829318, new node val acc: 0.8657373046875
+2024-10-31 11:49:18,411 - root - INFO - epoch: 5, tppr: 5.4299156665802, train: 18.74126935005188, val: 4.421180963516235
+2024-10-31 11:49:18,411 - root - INFO - train auc: 0.9106250176735122, train ap: 0.8789403273791297, train acc: 0.9075912333298874, train loss: 0.6753909258410885
+2024-10-31 11:49:18,412 - root - INFO - val auc: 0.8738551765507566, new node val auc: 0.8771674760606554
+2024-10-31 11:49:18,412 - root - INFO - val ap: 0.8425154374911992, new node val ap: 0.8459850336548602
+2024-10-31 11:49:18,412 - root - INFO - val acc: 0.8777424187941987, new node val acc: 0.8808349609375

@@ -1,0 +1,96 @@
+2024-12-27 22:45:04,810 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-27 22:45:04,812 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-27 22:45:17,593 - root - INFO - epoch 0 val ap: 0.1521
+2024-12-27 22:45:17,594 - root - INFO - val acc: 0.1521
+2024-12-27 22:45:18,645 - root - INFO - epoch 1 val ap: 0.1521
+2024-12-27 22:45:18,651 - root - INFO - val acc: 0.1521
+2024-12-27 22:45:19,662 - root - INFO - epoch 2 val ap: 0.1521
+2024-12-27 22:45:19,662 - root - INFO - val acc: 0.2718
+2024-12-27 22:45:20,625 - root - INFO - epoch 3 val ap: 0.1521
+2024-12-27 22:45:20,625 - root - INFO - val acc: 0.2718
+2024-12-27 22:45:21,611 - root - INFO - epoch 4 val ap: 0.1521
+2024-12-27 22:45:21,612 - root - INFO - val acc: 0.2718
+2024-12-27 22:45:22,586 - root - INFO - epoch 5 val ap: 0.1642
+2024-12-27 22:45:22,586 - root - INFO - val acc: 0.1774
+2024-12-27 22:45:23,592 - root - INFO - epoch 6 val ap: 0.1593
+2024-12-27 22:45:23,593 - root - INFO - val acc: 0.1558
+2024-12-27 22:45:24,587 - root - INFO - epoch 7 val ap: 0.1619
+2024-12-27 22:45:24,588 - root - INFO - val acc: 0.1405
+2024-12-27 22:45:25,568 - root - INFO - epoch 8 val ap: 0.1619
+2024-12-27 22:45:25,568 - root - INFO - val acc: 0.1308
+2024-12-27 22:45:26,555 - root - INFO - epoch 9 val ap: 0.1633
+2024-12-27 22:45:26,555 - root - INFO - val acc: 0.1463
+2024-12-27 22:45:27,526 - root - INFO - epoch 10 val ap: 0.1592
+2024-12-27 22:45:27,537 - root - INFO - val acc: 0.1834
+2024-12-27 22:45:28,506 - root - INFO - epoch 11 val ap: 0.1599
+2024-12-27 22:45:28,506 - root - INFO - val acc: 0.1871
+2024-12-27 22:45:29,502 - root - INFO - epoch 12 val ap: 0.1614
+2024-12-27 22:45:29,503 - root - INFO - val acc: 0.1687
+2024-12-27 22:45:30,456 - root - INFO - epoch 13 val ap: 0.1553
+2024-12-27 22:45:30,456 - root - INFO - val acc: 0.1355
+2024-12-27 22:45:31,456 - root - INFO - epoch 14 val ap: 0.1480
+2024-12-27 22:45:31,456 - root - INFO - val acc: 0.0866
+2024-12-27 22:45:32,431 - root - INFO - epoch 15 val ap: 0.1558
+2024-12-27 22:45:32,431 - root - INFO - val acc: 0.0532
+2024-12-27 22:45:33,404 - root - INFO - epoch 16 val ap: 0.1526
+2024-12-27 22:45:33,404 - root - INFO - val acc: 0.0429
+2024-12-27 22:45:34,383 - root - INFO - epoch 17 val ap: 0.1523
+2024-12-27 22:45:34,384 - root - INFO - val acc: 0.0442
+2024-12-27 22:45:35,360 - root - INFO - epoch 18 val ap: 0.1542
+2024-12-27 22:45:35,361 - root - INFO - val acc: 0.0489
+2024-12-27 22:45:36,337 - root - INFO - epoch 19 val ap: 0.1513
+2024-12-27 22:45:36,337 - root - INFO - val acc: 0.1000
+2024-12-27 22:45:37,335 - root - INFO - epoch 20 val ap: 0.1522
+2024-12-27 22:45:37,342 - root - INFO - val acc: 0.1555
+2024-12-27 22:45:38,328 - root - INFO - epoch 21 val ap: 0.1531
+2024-12-27 22:45:38,328 - root - INFO - val acc: 0.1674
+2024-12-27 22:45:39,321 - root - INFO - epoch 22 val ap: 0.1537
+2024-12-27 22:45:39,321 - root - INFO - val acc: 0.1558
+2024-12-27 22:45:40,307 - root - INFO - epoch 23 val ap: 0.1521
+2024-12-27 22:45:40,307 - root - INFO - val acc: 0.1226
+2024-12-27 22:45:41,297 - root - INFO - epoch 24 val ap: 0.1515
+2024-12-27 22:45:41,298 - root - INFO - val acc: 0.0624
+2024-12-27 22:45:42,292 - root - INFO - epoch 25 val ap: 0.1536
+2024-12-27 22:45:42,293 - root - INFO - val acc: 0.0458
+2024-12-27 22:45:43,292 - root - INFO - epoch 26 val ap: 0.1538
+2024-12-27 22:45:43,293 - root - INFO - val acc: 0.0434
+2024-12-27 22:45:44,301 - root - INFO - epoch 27 val ap: 0.1538
+2024-12-27 22:45:44,301 - root - INFO - val acc: 0.0434
+2024-12-28 10:13:48,309 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:13:48,311 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:16:52,703 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:16:52,706 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:24:28,581 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:24:28,583 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:27:13,069 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:27:13,072 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:28:21,353 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:28:21,355 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:30:13,997 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:30:13,998 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:32:44,676 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:32:44,678 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:33:29,996 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:33:29,998 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:37:08,464 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:37:08,466 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:44:15,636 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:44:15,639 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:45:46,033 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:45:46,034 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:50:57,113 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:50:57,114 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:54:50,772 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:54:50,773 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:56:10,724 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:56:10,726 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:56:57,085 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:56:57,087 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 10:59:59,054 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 10:59:59,056 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 11:01:10,126 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 11:01:10,128 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 11:02:37,125 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 11:02:37,128 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-28 11:06:08,289 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=200, n_layer=2, lr=0.001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-28 11:06:08,290 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt

@@ -1,0 +1,89 @@
+2024-12-27 22:29:35,583 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=50, n_layer=2, lr=0.0001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-27 22:29:35,584 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-27 22:29:47,994 - root - INFO - epoch: 1, tppr: 4.5468, train: 7.0770, val: 0.9309
+2024-12-27 22:29:47,995 - root - INFO - train auc: nan, train ap: 0.1735, train acc: 0.1032, train loss: 2.0969
+2024-12-27 22:29:47,995 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:47,996 - root - INFO - val ap: 0.1421
+2024-12-27 22:29:47,996 - root - INFO - val acc: 0.1323
+2024-12-27 22:29:49,269 - root - INFO - epoch: 2, tppr: 0.0063, train: 0.3790, val: 0.8054
+2024-12-27 22:29:49,270 - root - INFO - train auc: nan, train ap: 0.1655, train acc: 0.1755, train loss: 1.9367
+2024-12-27 22:29:49,270 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:49,271 - root - INFO - val ap: 0.1478
+2024-12-27 22:29:49,271 - root - INFO - val acc: 0.1461
+2024-12-27 22:29:50,449 - root - INFO - epoch: 3, tppr: 0.0059, train: 0.3746, val: 0.8016
+2024-12-27 22:29:50,450 - root - INFO - train auc: nan, train ap: 0.1632, train acc: 0.1936, train loss: 1.9511
+2024-12-27 22:29:50,450 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:50,450 - root - INFO - val ap: 0.1489
+2024-12-27 22:29:50,451 - root - INFO - val acc: 0.0934
+2024-12-27 22:29:51,628 - root - INFO - epoch: 4, tppr: 0.0056, train: 0.3698, val: 0.8052
+2024-12-27 22:29:51,628 - root - INFO - train auc: nan, train ap: 0.1702, train acc: 0.1736, train loss: 1.9422
+2024-12-27 22:29:51,628 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:51,629 - root - INFO - val ap: 0.1618
+2024-12-27 22:29:51,630 - root - INFO - val acc: 0.0557
+2024-12-27 22:29:52,810 - root - INFO - epoch: 5, tppr: 0.0064, train: 0.3734, val: 0.8043
+2024-12-27 22:29:52,810 - root - INFO - train auc: nan, train ap: 0.1808, train acc: 0.1740, train loss: 1.9317
+2024-12-27 22:29:52,810 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:52,811 - root - INFO - val ap: 0.1534
+2024-12-27 22:29:52,811 - root - INFO - val acc: 0.0560
+2024-12-27 22:29:54,003 - root - INFO - epoch: 6, tppr: 0.0056, train: 0.3793, val: 0.8105
+2024-12-27 22:29:54,003 - root - INFO - train auc: nan, train ap: 0.1730, train acc: 0.1262, train loss: 1.9218
+2024-12-27 22:29:54,003 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:54,004 - root - INFO - val ap: 0.1487
+2024-12-27 22:29:54,004 - root - INFO - val acc: 0.1191
+2024-12-27 22:29:55,189 - root - INFO - epoch: 7, tppr: 0.0056, train: 0.3778, val: 0.8051
+2024-12-27 22:29:55,190 - root - INFO - train auc: nan, train ap: 0.1621, train acc: 0.2384, train loss: 1.9116
+2024-12-27 22:29:55,190 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:55,191 - root - INFO - val ap: 0.1526
+2024-12-27 22:29:55,192 - root - INFO - val acc: 0.1575
+2024-12-27 22:29:56,379 - root - INFO - epoch: 8, tppr: 0.0060, train: 0.3715, val: 0.8133
+2024-12-27 22:29:56,380 - root - INFO - train auc: nan, train ap: 0.1576, train acc: 0.2271, train loss: 1.9031
+2024-12-27 22:29:56,380 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:56,380 - root - INFO - val ap: 0.1551
+2024-12-27 22:29:56,380 - root - INFO - val acc: 0.1598
+2024-12-27 22:29:57,578 - root - INFO - epoch: 9, tppr: 0.0058, train: 0.3834, val: 0.8121
+2024-12-27 22:29:57,578 - root - INFO - train auc: nan, train ap: 0.1599, train acc: 0.2454, train loss: 1.8891
+2024-12-27 22:29:57,578 - root - INFO - val auc: 0.0000
+2024-12-27 22:29:57,579 - root - INFO - val ap: 0.1534
+2024-12-27 22:29:57,579 - root - INFO - val acc: 0.1566
+2024-12-27 22:31:21,520 - root - INFO - Namespace(data='cora', bs=200, n_degree=10, n_head=7, n_epoch=50, n_layer=2, lr=0.0001, patience=5, n_runs=5, drop_out=0.3, gpu=0, use_memory=True, use_destination_embedding_in_message=False, use_source_embedding_in_message=False, message_function='identity', memory_updater='gru', embedding_module='diffusion', enable_random=False, aggregator='last', save_best=False, tppr_strategy='streaming', topk=20, alpha_list=[0.1, 0.1], beta_list=[0.05, 0.95], ignore_edge_feats=False, ignore_node_feats=False, node_dim=100, time_dim=100, memory_dim=100)
+2024-12-27 22:31:21,522 - fsspec.local - DEBUG - open file: /home/joe/datasets/Citation/cora/processed/data.pt
+2024-12-27 22:31:34,413 - root - INFO - epoch: 1, tppr: 4.4731, train: 7.2653, val: 0.8737
+2024-12-27 22:31:34,457 - root - INFO - train auc: nan, train ap: 0.1593, train acc: 0.1929, train loss: 2.0095
+2024-12-27 22:31:34,488 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:34,489 - root - INFO - val ap: 0.1521
+2024-12-27 22:31:34,489 - root - INFO - val acc: 0.1521
+2024-12-27 22:31:35,820 - root - INFO - epoch: 2, tppr: 0.0081, train: 0.4908, val: 0.7484
+2024-12-27 22:31:35,820 - root - INFO - train auc: nan, train ap: 0.1507, train acc: 0.2077, train loss: 1.9243
+2024-12-27 22:31:35,820 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:35,821 - root - INFO - val ap: 0.1564
+2024-12-27 22:31:35,821 - root - INFO - val acc: 0.1353
+2024-12-27 22:31:37,096 - root - INFO - epoch: 3, tppr: 0.0083, train: 0.5140, val: 0.7597
+2024-12-27 22:31:37,097 - root - INFO - train auc: nan, train ap: 0.1501, train acc: 0.2302, train loss: 1.8976
+2024-12-27 22:31:37,097 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:37,097 - root - INFO - val ap: 0.1622
+2024-12-27 22:31:37,098 - root - INFO - val acc: 0.0626
+2024-12-27 22:31:38,362 - root - INFO - epoch: 4, tppr: 0.0081, train: 0.4927, val: 0.7700
+2024-12-27 22:31:38,363 - root - INFO - train auc: nan, train ap: 0.1585, train acc: 0.2338, train loss: 1.8899
+2024-12-27 22:31:38,363 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:38,364 - root - INFO - val ap: 0.1530
+2024-12-27 22:31:38,364 - root - INFO - val acc: 0.0450
+2024-12-27 22:31:39,637 - root - INFO - epoch: 5, tppr: 0.0085, train: 0.5090, val: 0.7618
+2024-12-27 22:31:39,637 - root - INFO - train auc: nan, train ap: 0.1601, train acc: 0.2467, train loss: 1.8884
+2024-12-27 22:31:39,638 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:39,638 - root - INFO - val ap: 0.1510
+2024-12-27 22:31:39,638 - root - INFO - val acc: 0.0545
+2024-12-27 22:31:40,901 - root - INFO - epoch: 6, tppr: 0.0083, train: 0.5090, val: 0.7515
+2024-12-27 22:31:40,902 - root - INFO - train auc: nan, train ap: 0.1535, train acc: 0.2552, train loss: 1.8813
+2024-12-27 22:31:40,902 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:40,902 - root - INFO - val ap: 0.1443
+2024-12-27 22:31:40,902 - root - INFO - val acc: 0.1142
+2024-12-27 22:31:42,175 - root - INFO - epoch: 7, tppr: 0.0080, train: 0.5144, val: 0.7572
+2024-12-27 22:31:42,176 - root - INFO - train auc: nan, train ap: 0.1477, train acc: 0.2583, train loss: 1.8710
+2024-12-27 22:31:42,177 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:42,177 - root - INFO - val ap: 0.1534
+2024-12-27 22:31:42,178 - root - INFO - val acc: 0.1500
+2024-12-27 22:31:43,440 - root - INFO - epoch: 8, tppr: 0.0082, train: 0.5035, val: 0.7573
+2024-12-27 22:31:43,441 - root - INFO - train auc: nan, train ap: 0.1525, train acc: 0.2683, train loss: 1.8649
+2024-12-27 22:31:43,441 - root - INFO - val auc: 0.0000
+2024-12-27 22:31:43,441 - root - INFO - val ap: 0.1529
+2024-12-27 22:31:43,442 - root - INFO - val acc: 0.1529

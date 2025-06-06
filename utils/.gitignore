@@ -1,0 +1,10 @@
+log/
+__pycache__/
+.vscode/
+saved_checkpoints/
+data/
+Zebra_Old/
+*.cpython-311.pyc
+*.ipynb
+test_code.py
+train_ssh.py
