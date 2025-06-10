@@ -52,7 +52,6 @@ class Imbalance(object):
         Attention! There should be a assert to evaluate one thing:
         (np.array(selected_idx.extend(outside_select)) == seen_node).all() == True
         """
-        
         train_mask, val_mask, nn_val_mask = np.zeros(node_num, dtype=bool), np.zeros(node_num, dtype=bool), np.zeros(node_num, dtype=bool)
         
         outside_select.extend(nodes[int(node_num*self.train_ratio):].tolist()) # here, extended
@@ -131,7 +130,7 @@ class Few_Shot_Learning(object):
             full_val_mask = ~train_mask
             full_val_mask = full_val_mask & (label != -1) # remove the node with label -1
             val_mask, nn_val_mask = copy.deepcopy(full_val_mask), copy.deepcopy(full_val_mask) # Attention here, nn_val_mask will equal to val_mask
-        val_mask[int(node_num*self.fsl_num):], nn_val_mask[int(node_num*self.fsl_num):] = False, False
+        # val_mask[int(node_num*self.fsl_num):], nn_val_mask[int(node_num*self.fsl_num):] = False, False
         
         self.seen_node_with_val = np.hstack([node_match_list[training_data, 1], node_match_list[val_mask|nn_val_mask, 1]])
         self.seen_node = node_match_list[training_data, 1]

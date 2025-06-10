@@ -233,6 +233,150 @@ def quantile_static(val: float, test: float, timestamps: torch.Tensor) -> tuple[
 
   return train_mask, val_mask, test_mask
 
+def get_Temporal_data_TPPR_Node_Justification(dataset_name, snapshot: int, dynamic: bool, task: str, ratio: float = 0.0):
+    r"""
+    this function is used to convert the node features to the correct format\n
+    e.g. sample node dataset is in the format of [node_id, edge_idx, timestamp, features] with correspoding\n
+    shape [(n, ), (m,2), (m,), (m,d)]. be cautious on transformation method\n
+    
+    2025.4.5 TPPR and data_load method will not support TGB-Series data anymore
+    """
+    wargs = {"rb_task": task, "ratio": ratio}
+    graph, idx_list = data_load(dataset_name, **wargs)
+    graph_list = Temporal_Splitting(graph, dynamic=dynamic, idxloader=idx_list).temporal_splitting(snapshot=snapshot)
+    graph_num_node, graph_feat, edge_number = max(graph.x), copy.deepcopy(graph.pos), graph.edge_index.shape[1]
+
+    TPPR_list: list[list[Data]] = []
+    lenth = len(graph_list) - 1 # no training for the last graph, so -1
+        
+    for idx in range(lenth):
+      # covert Temproal_graph object to Data object
+      items = graph_list[idx]
+      temporal_node_num = items.x.shape[0]
+      items.edge_attr = items.edge_attr 
+      
+      src_edge = items.edge_index[0, :]
+      dst_edge = items.edge_index[1, :]
+      all_nodes = items.my_n_id.node["index"].values
+      flipped_nodes = items.my_n_id.node["node"].values
+      items.y = np.array(items.y)
+
+      t_labels = items.y
+      full_data = to_TPPR_Data(items)
+      timestamp = full_data.timestamps
+      # selected_splitted_timestamps = span_time_quantile(threshold=0.80, tsp=timestamp, dataset=dataset_name)
+      
+      train_node, train_node_origin, train_label = all_nodes[:int(temporal_node_num*0.8)], flipped_nodes[:int(temporal_node_num*0.8)], t_labels[:int(temporal_node_num*0.8)]
+      val_node, val_node_origin, val_label = all_nodes[int(temporal_node_num*0.8):], flipped_nodes[int(temporal_node_num*0.8):], t_labels[int(temporal_node_num*0.8):]
+      
+      train_selected_src_edge, train_selected_dst_edge = np.isin(src_edge, train_node_origin), np.isin(dst_edge, train_node_origin)
+      train_mask = train_selected_src_edge & train_selected_dst_edge
+      train_feature_should_be_seen = train_selected_src_edge | train_selected_dst_edge
+      
+      val_selected_src_edge, val_selected_dst_edge = np.isin(src_edge, val_node_origin), np.isin(dst_edge, val_node_origin)
+      val_mask = val_selected_src_edge | val_selected_dst_edge
+      nn_val_mask = val_selected_src_edge & val_selected_dst_edge
+      
+      hash_dataframe = copy.deepcopy(items.my_n_id.node.loc[:, ["index", "node"]].values.T)
+      hash_table: dict[int, int] = {node: idx for idx, node in zip(*hash_dataframe)}
+      
+      train_data = Data(full_data.sources[train_mask], full_data.destinations[train_mask], full_data.timestamps[train_mask],\
+                        full_data.edge_idxs[train_mask], t_labels, hash_table = hash_table, node_feat=full_data.node_feat)
+      train_data.setup_robustness((train_node, train_label))
+        
+      val_data = Data(full_data.sources[val_mask], full_data.destinations[val_mask], full_data.timestamps[val_mask],\
+                        full_data.edge_idxs[val_mask], t_labels, hash_table = hash_table, node_feat=full_data.node_feat)
+      val_data.setup_robustness((val_node, val_label))
+      
+      train_data_edge_learn = Data(full_data.sources[train_feature_should_be_seen], full_data.destinations[train_feature_should_be_seen], \
+      full_data.timestamps[train_feature_should_be_seen], full_data.edge_idxs[train_feature_should_be_seen], t_labels, hash_table=hash_table, node_feat=full_data.node_feat)
+      
+      nn_val_data = Data(full_data.sources[nn_val_mask], full_data.destinations[nn_val_mask], full_data.timestamps[nn_val_mask],\
+                        full_data.edge_idxs[nn_val_mask], t_labels, hash_table = hash_table, node_feat=full_data.node_feat)
+      nn_val_node_original = np.array(sorted(set(full_data.sources[nn_val_mask]) | set(full_data.destinations[nn_val_mask])))
+      nn_val_node = np.vectorize(nn_val_data.hash_table.get)(nn_val_node_original)
+      nn_val_data.setup_robustness((nn_val_node, t_labels[nn_val_node]))
+      
+      if task in ["imbalance", "fsl"]:
+        if task == "imbalance":
+          train_ratio, val_ratio = 0.8, 0.2
+          transform = Imbalance(train_ratio=train_ratio, ratio=ratio, val_ratio=val_ratio)
+          items = transform(items)
+          # val_node, train_node are node indices, match with node label in each row
+        elif task == "fsl":
+          transform = Few_Shot_Learning(fsl_num=ratio)
+          items = transform(items)
+      
+        node_label = items.my_n_id.node["label"].values
+          
+        train_label, train_node = node_label[items.train_mask], all_nodes[items.train_mask]
+        val_label, val_node = node_label[items.val_mask], all_nodes[items.val_mask]
+        nn_val_label, nn_val_node = node_label[items.nn_val_mask], all_nodes[items.nn_val_mask]
+        
+        train_data = fast_Data_object_update(items.my_n_id.node, train_node, full_data)
+        val_data = fast_Data_object_update(items.my_n_id.node, val_node, full_data)
+        nn_val_data = fast_Data_object_update(items.my_n_id.node, nn_val_node, full_data)
+        
+        train_data.setup_robustness((train_node, train_label)) 
+        val_data.setup_robustness((val_node, val_label))
+        nn_val_data.setup_robustness((nn_val_node, nn_val_label))
+            
+      test: Temporal_Dataloader = graph_list[idx+1]
+      test_data = to_TPPR_Data(test)
+      test_node, test_label = test.my_n_id.node["index"].values, test.my_n_id.node["label"].values
+      test_data.setup_robustness((test_node := test.my_n_id.node["index"].values, test_label))
+      
+      # test_data.setup_robustness((test_node, test_label))
+      nn_test_node_original = np.array(sorted(set(test.my_n_id.node["node"].values) - set(flipped_nodes)))
+      nn_test_node = np.vectorize(test_data.hash_table.get)(nn_test_node_original)
+      nn_test_src, nn_test_dst = np.isin(test_data.sources, nn_test_node_original), np.isin(test_data.destinations, nn_test_node_original)
+      nn_test_mask = nn_test_src | nn_test_dst
+      nn_test_data = Data(test_data.sources[nn_test_mask], test_data.destinations[nn_test_mask], test_data.timestamps[nn_test_mask],\
+                          test_data.edge_idxs[nn_test_mask], test_label, hash_table = test_data.hash_table, node_feat=test_data.node_feat)
+      
+      nn_test_label = test_label[nn_test_node]
+      nn_test_data.setup_robustness((nn_test_node, nn_test_label))
+      
+      if task in ["imbalance", "fsl"]:
+        test_transform = transform.test_processing(test)
+        nn_test_match_list = (test_node[test_transform.nn_test_mask], test_label[test_transform.nn_test_mask])
+        nn_test_data = fast_Data_object_update(test.my_n_id.node, nn_test_match_list[0], test_data)
+        nn_test_data.setup_robustness(nn_test_match_list)
+
+      node_num = items.num_nodes
+      node_edges = items.num_edges
+
+      TPPR_list.append([full_data, train_data, val_data, test_data, train_data_edge_learn, nn_val_data, nn_test_data, node_num, node_edges])
+      
+    return TPPR_list, graph_num_node, graph_feat, edge_number
+      
+def span_time_quantile(threshold: float, tsp: np.ndarray, dataset: str):
+    val_time = np.quantile(tsp, threshold)
+    
+    if dataset in ["dblp", "tmall"]:
+        spans, span_freq = np.unique(tsp, return_counts=True)
+        if val_time == spans[-1]: val_time = spans[int(spans.shape[0]*threshold)]
+    return val_time
+
+def fast_Data_object_update(match_table: pd.DataFrame, nodes: np.ndarray, full_data: Data) -> Data:
+  """
+  Updates a Data object by filtering its edges to include only those between specified nodes.
+  Args:
+    match_table (pd.DataFrame): A DataFrame containing at least three columns: ["index", "node", "label"]. Used to map new nodes to original nodes.
+    nodes (np.ndarray): An array of indices representing the new nodes to be included.
+    full_data (Data): The original Data object containing sources, destinations, timestamps, edge indices, labels, and optional attributes.
+  Returns:
+    Data: A new Data object containing only the edges where both source and destination nodes are among the specified nodes. Other attributes (labels, hash_table, node_feat) are preserved from the original Data object.
+  """
+  
+  nptable = match_table.values # ["index", "node", "label"]
+  original_node = nptable[nodes, 1] # nodes consisted by new node, use second column to match original node
+  nn_src, nn_dst = np.isin(full_data.sources, original_node), np.isin(full_data.destinations, original_node)
+  nn_mask = nn_src & nn_dst
+  return Data(full_data.sources[nn_mask], full_data.destinations[nn_mask], full_data.timestamps[nn_mask],\
+              full_data.edge_idxs[nn_mask], full_data.labels, hash_table=full_data.hash_table, node_feat=full_data.node_feat)
+  
+
 def get_data_TPPR(dataset_name, snapshot: int, dynamic: bool, task: str, ratio: float = 0.0):
     r"""
     this function is used to convert the node features to the correct format\n
@@ -293,14 +437,13 @@ def get_data_TPPR(dataset_name, snapshot: int, dynamic: bool, task: str, ratio: 
         if task in ["imbalance", "fsl"]:
           if task == "imbalance":
             train_ratio, val_ratio = 0.8, 0.2
-            if idxs == lenth-1:
-              train_ratio, val_ratio = 0.1, 0.1
+            if single_graph:  train_ratio, val_ratio = 0.1, 0.1
             transform = Imbalance(train_ratio=train_ratio, ratio=ratio, val_ratio=val_ratio)
             items = transform(items)
             # val_node, train_node are node indices, match with node label in each row
           elif task == "fsl":
             val_ratio = 1
-            if idxs == lenth-1: val_ratio = 0.2
+            if single_graph: val_ratio = 0.2
             transform = Few_Shot_Learning(fsl_num=ratio)
             items = transform(items)
           
@@ -373,7 +516,6 @@ def get_data_TPPR(dataset_name, snapshot: int, dynamic: bool, task: str, ratio: 
 
 
     return TPPR_list, graph_num_node, graph_feat, edge_number
-
 
 def batch_processor(data_label: dict[dict[int, np.ndarray]], data: Data)->list[tuple[np.ndarray]]:
   time_stamp = data.timestamps

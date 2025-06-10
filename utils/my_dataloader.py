@@ -377,6 +377,8 @@ class Temporal_Splitting(object):
             T = [span * i / (snapshots-1) for i in range(1, snapshots)]
             if views > snapshots:
                 return "The number of sampled views exceeds the maximum value of the current policy."
+        random.seed(2025)
+        np.random.seed(2025)
         T = random.sample(T, views)
         T= sorted(T)
         if span not in T: T[-1] = span
