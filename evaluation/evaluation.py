@@ -267,22 +267,27 @@ def fast_eval_check(src_combination, data: Data, emb, prj_model):
     
     y_true = data.labels[refreshed_node]
     y_hat = output.argmax(-1).cpu().numpy()
+    """
+    shape of y_hat == y_true == refreshed_node <<< data.labels
     
+    Attention! cannot use y_true to select labels for nn test data!
+    Becuase although data.labels.shape == refreshed_node.shape, but node order is different!
+    For nn test data, pls also use data.labels[nn_val_match_node] to select labels!
+    """
     val_match_node, val_match_label = data.robustness_match_tuple
-    nn_val_match = data.inductive_match_tuple
     
-    from_selected_node2match_edge_node_mask = np.isin(refreshed_node, val_match_node)
+    from_selected_node2match_edge_node_mask = np.isin(refreshed_node, val_match_node) & (y_true != -1) # add here due to test data will have -1 label
     val_allow2see, val_label_allow2see = y_hat[from_selected_node2match_edge_node_mask], y_true[from_selected_node2match_edge_node_mask]
     
-    if nn_val_match != None:
-        nn_val_match_node, nn_val_match_label = nn_val_match
-        nn_from_selected_node2match_edge_node_mask = np.isin(refreshed_node, nn_val_match_node)
-        nn_val_allow2see, nn_val_label_allow2see = y_hat[nn_from_selected_node2match_edge_node_mask], y_true[nn_from_selected_node2match_edge_node_mask]
+    # if nn_val_match != None:
+    #     nn_val_match_node, nn_val_match_label = nn_val_match
+    #     nn_from_selected_node2match_edge_node_mask = np.isin(refreshed_node, nn_val_match_node)
+    #     nn_val_allow2see, nn_val_label_allow2see = y_hat[nn_from_selected_node2match_edge_node_mask], data.labels[nn_val_match_node] # look at here
     
     val_acc, val_prec, val_recall, val_f1 = full_evaluation_method(val_allow2see, val_label_allow2see)
     val_dict = {"val_acc": val_acc, "val_prec": val_prec, "val_recall": val_recall, "val_f1": val_f1}
-    if nn_val_match != None:
-        nn_val_acc, nn_val_prec, nn_val_recall, nn_val_f1 = full_evaluation_method(nn_val_allow2see, nn_val_label_allow2see)
-        val_dict = {**val_dict, **{"nn_val_acc": nn_val_acc, "nn_val_prec": nn_val_prec, "nn_val_recall": nn_val_recall, "nn_val_f1": nn_val_f1}}
+    # if nn_val_match != None:
+    #     nn_val_acc, nn_val_prec, nn_val_recall, nn_val_f1 = full_evaluation_method(nn_val_allow2see, nn_val_label_allow2see)
+    #     val_dict = {**val_dict, **{"nn_val_acc": nn_val_acc, "nn_val_prec": nn_val_prec, "nn_val_recall": nn_val_recall, "nn_val_f1": nn_val_f1}}
     return val_dict
         

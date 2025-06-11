@@ -313,9 +313,9 @@ def get_Temporal_data_TPPR_Node_Justification(dataset_name, snapshot: int, dynam
         val_label, val_node = node_label[items.val_mask], all_nodes[items.val_mask]
         nn_val_label, nn_val_node = node_label[items.nn_val_mask], all_nodes[items.nn_val_mask]
         
-        train_data = fast_Data_object_update(items.my_n_id.node, train_node, full_data)
-        val_data = fast_Data_object_update(items.my_n_id.node, val_node, full_data)
-        nn_val_data = fast_Data_object_update(items.my_n_id.node, nn_val_node, full_data)
+        train_data = fast_Data_object_update(items.my_n_id.node, train_node, full_data, task=task)
+        val_data = fast_Data_object_update(items.my_n_id.node, val_node, full_data, task=task)
+        nn_val_data = fast_Data_object_update(items.my_n_id.node, nn_val_node, full_data, task=task)
         
         train_data.setup_robustness((train_node, train_label)) 
         val_data.setup_robustness((val_node, val_label))
@@ -340,7 +340,7 @@ def get_Temporal_data_TPPR_Node_Justification(dataset_name, snapshot: int, dynam
       if task in ["imbalance", "fsl"]:
         test_transform = transform.test_processing(test)
         nn_test_match_list = (test_node[test_transform.nn_test_mask], test_label[test_transform.nn_test_mask])
-        nn_test_data = fast_Data_object_update(test.my_n_id.node, nn_test_match_list[0], test_data)
+        nn_test_data = fast_Data_object_update(test.my_n_id.node, nn_test_match_list[0], test_data, task=task)
         nn_test_data.setup_robustness(nn_test_match_list)
 
       node_num = items.num_nodes
@@ -358,7 +358,7 @@ def span_time_quantile(threshold: float, tsp: np.ndarray, dataset: str):
         if val_time == spans[-1]: val_time = spans[int(spans.shape[0]*threshold)]
     return val_time
 
-def fast_Data_object_update(match_table: pd.DataFrame, nodes: np.ndarray, full_data: Data) -> Data:
+def fast_Data_object_update(match_table: pd.DataFrame, nodes: np.ndarray, full_data: Data, task:str = None) -> Data:
   """
   Updates a Data object by filtering its edges to include only those between specified nodes.
   Args:
@@ -373,6 +373,8 @@ def fast_Data_object_update(match_table: pd.DataFrame, nodes: np.ndarray, full_d
   original_node = nptable[nodes, 1] # nodes consisted by new node, use second column to match original node
   nn_src, nn_dst = np.isin(full_data.sources, original_node), np.isin(full_data.destinations, original_node)
   nn_mask = nn_src & nn_dst
+  if task == "fsl":
+    nn_mask = nn_src | nn_dst
   return Data(full_data.sources[nn_mask], full_data.destinations[nn_mask], full_data.timestamps[nn_mask],\
               full_data.edge_idxs[nn_mask], full_data.labels, hash_table=full_data.hash_table, node_feat=full_data.node_feat)
   

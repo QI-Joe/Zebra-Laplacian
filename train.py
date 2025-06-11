@@ -10,7 +10,7 @@ from pathlib import Path
 from evaluation.evaluation import LogRegression, fast_eval_check
 from model.tgn_model import TGN
 from utils.util import EarlyStopMonitor, RandEdgeSampler, get_neighbor_finder
-from utils.data_processing import get_data_TPPR
+from utils.data_processing import get_data_TPPR, get_Temporal_data_TPPR_Node_Justification
 from sklearn.metrics import precision_score, roc_auc_score, accuracy_score
 from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning, NumbaTypeSafetyWarning
 from utils.my_dataloader import to_cuda, Temporal_Splitting, Temporal_Dataloader, data_load
@@ -90,11 +90,11 @@ dynamic: bool = args.dynamic
 ROBUST_TASK = args.task
 CORA_INDUCTIVE: bool = args.cora_inductive
 EPOCH_INTERVAL = 25
-RATIO = args.ratio
+RATIO = int(args.ratio) if args.ratio>10 else args.ratio
 SNAPSHOT = args.snapshot
 
 
-round_list, graph_num, graph_feature, edge_num = get_data_TPPR(DATA, snapshot=SNAPSHOT, dynamic=dynamic, task=ROBUST_TASK, ratio=RATIO)
+round_list, graph_num, graph_feature, edge_num = get_Temporal_data_TPPR_Node_Justification(DATA, snapshot=SNAPSHOT, dynamic=dynamic, task=ROBUST_TASK, ratio=RATIO)
 
 device_string = 'cuda:{}'.format(GPU) if torch.cuda.is_available() else 'cpu'
 device = torch.device(device_string)
@@ -105,11 +105,11 @@ laplacian_memory = EfficentMemory(snapshot=SNAPSHOT, device=device, combination_
 
 all_run_times = time.time()
 VIEW = len(round_list)
-
+model = "Zebra-Lap"
 print(f"Given task is {ROBUST_TASK}")
 for i in range(1):
 
-  full_data, train_data, val_data, test_data, n_nodes, n_edges = round_list[i]
+  full_data, train_data, val_data, test_data, train_learn, nn_val_data, nn_test_data, n_nodes, n_edges = round_list[i]
   num_classes = np.max(full_data.labels)+1
 
   args.n_nodes = graph_num +1
@@ -124,7 +124,7 @@ for i in range(1):
     edge_feats = np.zeros((args.n_edges, 1))
     edge_feat_dims = 1
 
-  train_ngh_finder = get_neighbor_finder(train_data)
+  train_ngh_finder = get_neighbor_finder(train_learn)
   val_tppr_backup, test_tppr_backup = float(0), float(0)
 
   tgn = TGN(neighbor_finder=train_ngh_finder, node_features=node_feats, edge_features=edge_feats, device=device,
@@ -151,6 +151,9 @@ for i in range(1):
   t_total_epoch_test=0
   t_total_tppr=0
   stop_epoch=-1
+  best_test_acc = 0.0
+  patience_counter = 0
+  patience_limit = 5
 
   embedding_module = tgn.embedding_module
 
@@ -159,16 +162,16 @@ for i in range(1):
   # a variable name problem, train_src doesnt means np array contains source nodes
   # but both train sources and train destination nodes. 
   # which, train_src matches with batch_train
-  train_src = np.concatenate([train_data.sources, train_data.destinations])
-  timestamps_train = np.concatenate([train_data.timestamps, train_data.timestamps])
+  train_src = np.concatenate([train_learn.sources, train_learn.destinations])
+  timestamps_train = np.concatenate([train_learn.timestamps, train_learn.timestamps])
 
-  embedding_module.streaming_topk_node(source_nodes=train_src, timestamps=timestamps_train, edge_idxs=train_data.edge_idxs)
+  embedding_module.streaming_topk_node(source_nodes=train_src, timestamps=timestamps_train, edge_idxs=train_learn.edge_idxs)
 
   train_tppr_time, snapshot_list = [], []
   tppr_filled = False
   # TODO: Add laplacian embedding memory
-  edge_index = torch.from_numpy(np.vstack((train_data.sources, train_data.destinations)))
-  edge_index_lap, edge_weight_lap = get_laplacian(edge_index, normalization='sym', num_nodes=n_nodes)
+  edge_index = torch.from_numpy(np.vstack((train_learn.sources, train_learn.destinations)))
+  edge_index_lap, edge_weight_lap = get_laplacian(edge_index, normalization='sym', num_nodes=graph_num+1)
   tgn.laplacian_memory.add_snapshot_memory(first_edge_idx_lap=edge_index_lap, first_edge_value_lap=edge_weight_lap, node_list=train_src)
 
   val_record = []
@@ -184,7 +187,6 @@ for i in range(1):
     train_loss=[]
 
     tgn.memory.__init_memory__()
-    # tgn.set_neighbor_finder(train_ngh_finder)
 
     # model training
     tgn.train()
@@ -213,7 +215,7 @@ for i in range(1):
       sample_node = vector_map(sample_node)
       
       train_match_list, train_tranucated_label = train_data.robustness_match_tuple
-      node_allow2see_mask = np.isin(sample_node, train_match_list)
+      node_allow2see_mask = np.isin(sample_node, train_match_list) & (train_data.labels[sample_node] != -1)
       # node_allow2see_mask = np.ones_like(sample_node, dtype=bool)
       
       labels = train_data.labels[sample_node][node_allow2see_mask]
@@ -227,9 +229,10 @@ for i in range(1):
 
       with torch.no_grad():
         node_pred = node_emb[node_allow2see_mask].argmax(-1).cpu().numpy()
+        train_loss.append(loss.item())
         train_ap.append(precision_score(labels.reshape(-1,1), node_pred.reshape(-1,1), average="macro", zero_division=1.0))
         train_acc.append(accuracy_score(labels.reshape(-1,1), node_pred.reshape(-1,1)))
-        print(f"(TPPR) | snapshot {i} epoch {epoch} train ACC {train_acc[-1]:.5f}, train AP {train_ap[-1]:.5f}, Loss: {loss.item():.4f}")
+    print(f"(TPPR) | snapshot {i} epoch {epoch} train ACC {np.mean(train_acc):.5f}, train AP {np.mean(train_ap):.5f}, Loss: {np.mean(train_loss):.4f}")
 
     if (epoch+1) % EPOCH_INTERVAL != 0: continue
     tgn.eval()
@@ -270,6 +273,17 @@ for i in range(1):
     tgn.memory.restore_memory(train_memory_backup)
     embedding_module.restore_tppr(train_tppr_backup)
 
+    with torch.no_grad():
+      nn_val_source = np.concatenate([nn_val_data.sources, nn_val_data.destinations])
+      nn_val_timestamps = np.concatenate([nn_val_data.timestamps, nn_val_data.timestamps])
+      embedding_module.streaming_topk_node(source_nodes=nn_val_source, timestamps=nn_val_timestamps, edge_idxs=nn_val_data.edge_idxs)
+      nn_val_emb = tgn.compute_temporal_node_embeddings(sources = nn_val_source, edge_times = nn_val_timestamps, train=False)
+    nn_val_check = fast_eval_check(nn_val_source, nn_val_data, nn_val_emb, prj_model = projector)
+    
+    tgn.memory.restore_memory(train_memory_backup)
+    if args.tppr_strategy=='streaming':
+      tgn.embedding_module.restore_tppr(train_tppr_backup)
+
     epoch_val_time = time.time() - t_epoch_val_start
     t_total_epoch_val += epoch_val_time
     epoch_id = epoch+1
@@ -279,8 +293,8 @@ for i in range(1):
 
     ### transductive test
     val_memory_backup = tgn.memory.backup_memory()
-    if args.tppr_strategy=='streaming':
-      val_tppr_backup = tgn.embedding_module.backup_tppr()
+    # if args.tppr_strategy=='streaming':
+    #   val_tppr_backup = tgn.embedding_module.backup_tppr()
 
     tgn.embedding_module.reset_tppr() # reset tppr to all 0
     test_source = np.concatenate([test_data.sources, test_data.destinations])
@@ -306,6 +320,18 @@ for i in range(1):
     tgn.memory.restore_memory(train_memory_backup)
     if args.tppr_strategy=='streaming':
       tgn.embedding_module.restore_tppr(train_tppr_backup)
+      
+    with torch.no_grad():
+      nn_test_source = np.concatenate([nn_test_data.sources, nn_test_data.destinations])
+      nn_test_timestamps = np.concatenate([nn_test_data.timestamps, nn_test_data.timestamps])
+      embedding_module.streaming_topk_node(source_nodes=nn_test_source, timestamps=nn_test_timestamps, edge_idxs=nn_test_data.edge_idxs)
+      nn_test_emb = tgn.compute_temporal_node_embeddings(sources = nn_test_source, edge_times = nn_test_timestamps, train=False)
+    
+    nn_test_check = fast_eval_check(nn_test_source, nn_test_data, nn_test_emb, prj_model = projector)
+    
+    tgn.memory.restore_memory(train_memory_backup)
+    if args.tppr_strategy=='streaming':
+      tgn.embedding_module.restore_tppr(train_tppr_backup)
 
     t_test=time.time()-t_test_start
 
@@ -313,43 +339,42 @@ for i in range(1):
 
     NUM_EPOCH=stop_epoch if stop_epoch!=-1 else NUM_EPOCH
 
-    print('\n(TPPR) | snapshot {} epoch {} val acc: {:.4f}, val precision: {:.4f}, val recall: {:.4f}, val f1: {:.4f}'.format(i, epoch, \
-        val_check["val_acc"], val_check["val_prec"], val_check["val_recall"], val_check["val_f1"]))
-    print('(TPPR) | snapshot {} epoch {} test acc: {:.4f}, test precision: {:.4f}, test recall: {:.4f}, test f1: {:.4f}'.format(i, epoch, \
-        test_check["val_acc"], test_check["val_prec"], test_check["val_recall"], test_check["val_f1"]))
+    current_test_acc = test_check["val_acc"]  # Assuming this is the correct key for test accuracy
+    if current_test_acc > best_test_acc:
+        best_test_acc = current_test_acc
+        patience_counter = 0  # Reset counter if we have a new best
+    else:
+        patience_counter += 1  # Increment counter if no improvement
 
-    if "nn_val_acc" in val_check:
-      print('(TPPR) | snapshot {} epoch {} nn_val acc: {:.4f}, nn_val precision: {:.4f}, nn_val recall: {:.4f}, nn_val f1: {:.4f}'.format(
-        i, epoch, val_check["nn_val_acc"], val_check["nn_val_prec"], val_check["nn_val_recall"], val_check["nn_val_f1"]))
-    if "nn_val_acc" in test_check:
-      print('(TPPR) | snapshot {} epoch {} nn_test acc: {:.4f}, nn_test precision: {:.4f}, nn_test recall: {:.4f}, nn_test f1: {:.4f}'.format(
-        i, epoch, test_check["nn_val_acc"], test_check["nn_val_acc"], test_check["nn_val_acc"], test_check["nn_val_acc"]))
+    # Check for early stopping
+    if patience_counter >= patience_limit:
+        print(f'Early stopping triggered after {patience_limit} epochs without improvement.')
+        break
+
+    simple_key = "val"
+    for name, data in zip(["val", "nn_val", "test", "nn_test"], [val_check, nn_val_check, test_check, nn_test_check]):
+      print(f"TPPR at {i+1} Snapshot |"+" ".join([f"{dkey.replace(simple_key, name)} value is: {dval:.4f}" for dkey, dval in data.items()]))
 
     print(f'### num_epoch time {NUM_EPOCH}, epoch_train time {round(t_total_epoch_train/NUM_EPOCH, 4)}, epoch_val time {round(t_total_epoch_val/NUM_EPOCH, 4)}, epoch_test time {round(t_test, 4)}, train_tppr time {round(np.mean(train_tppr_time), 4)}')
     # print(f"### all epoch train time {round(t_total_epoch_train, 4)}, entire tppr finder time {round(np.sum(train_tppr_time), 4)}, entire run time without data loading: {round(time.time()-all_run_times, 4)}")
 
-    snapshot_list.append((val_check, test_check))
+    # Merge val_check and nn_val_check
+    merged_val_check = {}
+    for key, value in val_check.items():
+      merged_val_check[key] = value
+    for key, value in nn_val_check.items():
+      new_key = "nn_" + key
+      merged_val_check[new_key] = value
 
-    if not CORA_INDUCTIVE: continue
+    # Merge test_check and nn_test_check
+    merged_test_check = {}
+    for key, value in test_check.items():
+      merged_test_check[key] = value
+    for key, value in nn_test_check.items():
+      if key.startswith("val_"): new_key = "nn_test_" + key[4:]
 
-    val_record = np.array(val_record).T
-    val_mean = np.mean(val_record, axis=1)
+    snapshot_list.append((merged_val_check, merged_test_check))
 
-    test_node = set(test_data.sources) | set(test_data.destinations)
-    val_node = set(val_data.sources) | set(test_data.destinations)
-    train_node = set(train_data.sources) | set(train_data.destinations)
-
-    assert len(train_node & val_node) == 0, f"train node and val node has interaction, which are {train_node & test_node}"
-    assert len(train_node & val_node & test_node) == 0, f"test node, train node and val node has interaction"
-    all_nodes = train_node | val_node | test_node
-    if len(all_nodes) != 2708:
-      print(f"Not All node is considered, number of nodes: {len(all_nodes)}")
-      print(set([i for i in range(2708)]) - all_nodes)
-
-    print(f"Number of test nodes: {len(test_node)}")
-    print(f"Number of validation nodes: {len(val_node)}")
-    print(f"Number of training nodes: {len(train_node)}")
-  
   # Compute mean values for each metric in val_check and test_check across all snapshots
   mean_val_metrics = {}
   mean_test_metrics = {}
@@ -376,13 +401,13 @@ for i in range(1):
 
   test_record.append((mean_val_metrics, mean_test_metrics))
 
-
 times = time.time()
-# Convert the current time to day_hour_time_month format
 formatted_time = datetime.fromtimestamp(times).strftime('%m_%d_%H_%M')
-file_name = f"{DATA}_{SNAPSHOT}_{formatted_time}_{ROBUST_TASK}_{RATIO}"
-with open(rf"log/{file_name}.txt", "w") as file:
+file_name = f"{model}_{DATA}_Snapshot: {SNAPSHOT}_{ROBUST_TASK}_{RATIO}_{formatted_time}"
+save_dir = os.path.join("log", DATA, formatted_time[3:5], ROBUST_TASK)
+os.makedirs(save_dir, exist_ok=True)
 
+with open(rf"{save_dir}/{file_name}.txt", "w") as file:
   for idx, recs in enumerate(test_record):
     val, tests = recs
     print(f"At snapshot {idx}, we get:")
